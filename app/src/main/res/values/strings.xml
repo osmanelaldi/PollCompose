@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">PollCompose</string>
+
+    <string name="login">Login</string>
+    <string name="signup_link">Don’t have an account? Sign up</string>
+</resources>
