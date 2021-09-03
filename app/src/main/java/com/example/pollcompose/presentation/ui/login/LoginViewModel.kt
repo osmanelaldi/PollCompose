@@ -26,6 +26,17 @@ constructor(
 
     val authenticatedId : MutableState<String?> = mutableStateOf(null)
     val loading = mutableStateOf(false)
+    val email = mutableStateOf("")
+    val password = mutableStateOf("")
+
+    init {
+        state.get<String>(LOGIN_EMAIL_KEY)?.let { email->
+            setEmail(email)
+        }
+        state.get<String>(LOGIN_PASSWORD_KEY)?.let { password->
+            setPassword(password)
+        }
+    }
 
     fun login(accountRequest: AccountRequest){
         viewModelScope.launch {
@@ -52,4 +63,13 @@ constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun setEmail(emailEntry : String){
+        state.set(LOGIN_EMAIL_KEY, email)
+        email.value = emailEntry
+    }
+
+    fun setPassword(passwordEntry : String){
+        state.set(LOGIN_PASSWORD_KEY, password)
+        password.value = passwordEntry
+    }
 }
