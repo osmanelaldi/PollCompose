@@ -1,8 +1,9 @@
 package com.example.pollcompose.data.network
 
 import com.example.pollcompose.domain.model.AccountRequest
-import com.example.pollcompose.domain.model.AccountResponse
 import com.example.pollcompose.domain.model.Poll
+import com.example.pollcompose.model.AccountResponse
+import com.example.pollcompose.model.UserRequest
 import io.ktor.client.*
 import io.ktor.client.request.*
 
@@ -20,7 +21,10 @@ class PollServiceImpl(
     override suspend fun signUp(accountRequest: AccountRequest): AccountResponse {
         return httpClient.post<AccountResponse>{
             url("${ServiceConstants.BASE_URL}/auth/v1/signup")
-            header(ServiceConstants.API_KEY, ServiceConstants.KEY)
+            headers{
+                header(ServiceConstants.API_KEY, ServiceConstants.KEY)
+                header(ServiceConstants.CONTENT_TYPE, ServiceConstants.CONTENT_TYPE_JSON)
+            }
             body = accountRequest
         }
     }
@@ -28,7 +32,11 @@ class PollServiceImpl(
     override suspend fun login(accountRequest: AccountRequest): AccountResponse {
         return httpClient.post<AccountResponse>{
             url("${ServiceConstants.BASE_URL}/auth/v1/token?grant_type=password")
-            header(ServiceConstants.API_KEY,ServiceConstants.KEY)
+            headers{
+                header(ServiceConstants.API_KEY, ServiceConstants.KEY)
+                header(ServiceConstants.CONTENT_TYPE, ServiceConstants.CONTENT_TYPE_JSON)
+            }
+            body = accountRequest
         }
     }
 
@@ -39,6 +47,18 @@ class PollServiceImpl(
                 header(ServiceConstants.API_KEY,ServiceConstants.KEY)
                 header(ServiceConstants.AUTHORIZATION,token)
             }
+        }
+    }
+
+    override suspend fun createUser(userRequest: UserRequest): Void {
+        return httpClient.post("${ServiceConstants.BASE_URL}/rest/v1/User"){
+            headers {
+                header(ServiceConstants.API_KEY,ServiceConstants.KEY)
+                header(ServiceConstants.AUTHORIZATION,userRequest.token)
+                header(ServiceConstants.CONTENT_TYPE, ServiceConstants.CONTENT_TYPE_JSON)
+                header(ServiceConstants.PREFER,ServiceConstants.PREFER_VALUE)
+            }
+            body = userRequest.toRequestDTO()
         }
     }
 }

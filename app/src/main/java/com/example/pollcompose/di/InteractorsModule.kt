@@ -1,10 +1,9 @@
 package com.example.pollcompose.di
 
+import android.app.Application
+import android.content.Context
 import com.example.pollcompose.data.network.PollService
-import com.example.pollcompose.interactors.AuthToken
-import com.example.pollcompose.interactors.GetPolls
-import com.example.pollcompose.interactors.Login
-import com.example.pollcompose.interactors.SignUp
+import com.example.pollcompose.interactors.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,17 +25,19 @@ object InteractorsModule {
     @Singleton
     @Provides
     fun provideGetSignUp(
-        pollService: PollService
+        pollService: PollService,
+        context : Application
     ): SignUp{
-        return SignUp(pollService = pollService)
+        return SignUp(pollService = pollService, context = context)
     }
 
     @Singleton
     @Provides
     fun provideLogin(
-        pollService: PollService
+        pollService: PollService,
+        context : Application
     ): Login{
-        return Login(pollService = pollService)
+        return Login(pollService = pollService, context = context)
     }
 
     @Singleton
@@ -45,5 +46,13 @@ object InteractorsModule {
         pollService: PollService
     ): AuthToken{
         return AuthToken(pollService = pollService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideCreateUser(
+        pollService: PollService
+    ): CreateUser{
+        return CreateUser(pollService = pollService)
     }
 }

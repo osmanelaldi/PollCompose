@@ -1,4 +1,4 @@
-package com.example.pollcompose.presentation.ui.login
+package com.example.pollcompose.presentation.ui.signup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,31 +22,32 @@ import com.example.pollcompose.presentation.Screen
 import com.example.pollcompose.presentation.theme.Brown
 import com.example.pollcompose.presentation.theme.GreenLight
 import com.example.pollcompose.presentation.ui.components.AppTheme
+import com.example.pollcompose.presentation.ui.login.LoginViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalMaterialApi
 @ExperimentalUnitApi
 @ExperimentalCoroutinesApi
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel,
+fun SignUpScreen(
+    viewModel: SignUpViewModel,
     navigatePage : (String) -> Unit
 ){
 
     val loading = viewModel.loading
-    val authenticatedId = viewModel.authenticatedId
+    val newUser = viewModel.newUser
+    val emailMatches = viewModel.emailMatches
+    val passwordMatches = viewModel.passwordMatches
     val dialogQueue = viewModel.queue
 
-    fun login(){
+    fun signUp(){
         val email = viewModel.email.value
         val password = viewModel.password.value
-        viewModel.login( AccountRequest(email, password) )
+        viewModel.signUp( AccountRequest(email, password) )
     }
 
-    authenticatedId.value?.let { id->
-        if (id.isNotEmpty()){
-            navigatePage(Screen.MainScreen.route)
-        }
+    newUser.value?.let { id->
+
     }
 
     AppTheme(
@@ -91,6 +92,19 @@ fun LoginScreen(
                         .fillMaxWidth()
                 )
                 TextField(
+                    value = viewModel.email.value,
+                    onValueChange = { entry->
+                        viewModel.setEmail(entry)
+                    },
+                    label = { Text(LocalContext.current.getString(R.string.email)) },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .padding(top = 20.dp, bottom = 15.dp)
+                        .fillMaxWidth()
+                )
+                TextField(
                     value = viewModel.password.value,
                     onValueChange = { entry->
                         viewModel.setPassword(entry)
@@ -110,7 +124,7 @@ fun LoginScreen(
                     modifier = Modifier
                         .padding(bottom = 15.dp)
                         .fillMaxWidth(),
-                    onClick = { login() }) {
+                    onClick = { signUp() }) {
                     if(loading.value)
                         CircularProgressIndicator(
                             modifier = Modifier.size(20.dp),
@@ -119,7 +133,7 @@ fun LoginScreen(
                         )
                     else
                         Text(
-                            text = LocalContext.current.getString(R.string.login),
+                            text = LocalContext.current.getString(R.string.signup),
                             fontSize = TextUnit(13f, TextUnitType.Sp),
                             color = Color.White,
                         )
@@ -127,21 +141,21 @@ fun LoginScreen(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(30.dp)
-                        .clickable { navigatePage(Screen.SignUpScreen.route) },
-                    textAlign = TextAlign.Center,
-                    text = LocalContext.current.getString(R.string.signup_link),
-                    fontSize = TextUnit(13f, TextUnitType.Sp),
-                    style = TextStyle(
-                        textDecoration = TextDecoration.combine(
-                            listOf(
-                                TextDecoration.Underline
-                            )
-                        ), fontWeight = FontWeight.Bold
-                    ),
-                    color = Color.Gray,
+                        .height(30.dp),
+                    textAlign = TextAlign.Start,
+                    text = LocalContext.current.getString(R.string.email_format),
+                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                    color = if(emailMatches.value) GreenLight else Color.Gray,
                 )
-
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(30.dp),
+                    textAlign = TextAlign.Start,
+                    text = LocalContext.current.getString(R.string.password_format),
+                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                    color = if(passwordMatches.value) GreenLight else Color.Gray,
+                )
             }
         }
     }

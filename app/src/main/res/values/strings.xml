@@ -1,7 +1,15 @@
 <resources>
     <string name="app_name">Ask</string>
     <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
     <string name="email">Email</string>
+    <string name="dismiss">DISMISS</string>
+    <string name="error">Error Occured</string>
     <string name="password">Password</string>
     <string name="signup_link">Don’t have an account? Sign up</string>
+    <string name="email_or_password_empty">Email and password field is required</string>
+    <string name="please_fill_all_fields">All fields are required</string>
+    <string name="email_or_password_format">Email and password do not match right format</string>
+    <string name="password_format">Password should be at least 6 characters</string>
+    <string name="email_format">Email address should be in right format. Ex.= abc@abc.com..</string>
 </resources>

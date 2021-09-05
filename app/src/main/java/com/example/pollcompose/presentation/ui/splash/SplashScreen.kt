@@ -1,5 +1,6 @@
 package com.example.pollcompose.presentation.ui.splash
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
@@ -14,9 +15,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.pollcompose.R
 import com.example.pollcompose.presentation.Screen
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @ExperimentalComposeUiApi
 @ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
@@ -53,7 +56,10 @@ fun SplashScreen(
     if(token.isNotEmpty()){
         viewModel.authenticateToken(token)
     }else{
-        navigatePage(Screen.LoginScreen.route)
+        CoroutineScope(Dispatchers.Main).launch{
+            delay(1000)
+            navigatePage(Screen.LoginScreen.route)
+        }
     }
 
     authenticatedId.value?.let { id->

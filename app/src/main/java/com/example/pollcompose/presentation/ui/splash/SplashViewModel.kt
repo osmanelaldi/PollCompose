@@ -40,7 +40,7 @@ class SplashViewModel
             loading.value = dataState.isLoading
 
             dataState.data?.let { data->
-                authenticatedId.value = data.id
+                authenticatedId.value = data.user.id
             }
             dataState.error?.let {
                 authenticatedId.value = ""

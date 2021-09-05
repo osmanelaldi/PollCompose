@@ -16,6 +16,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pollcompose.presentation.Screen
 import com.example.pollcompose.presentation.ui.login.LoginScreen
 import com.example.pollcompose.presentation.ui.login.LoginViewModel
+import com.example.pollcompose.presentation.ui.main.MainScreen
+import com.example.pollcompose.presentation.ui.main.MainViewModel
+import com.example.pollcompose.presentation.ui.signup.SignUpScreen
+import com.example.pollcompose.presentation.ui.signup.SignUpViewModel
 import com.example.pollcompose.presentation.ui.splash.SplashScreen
 import com.example.pollcompose.presentation.ui.splash.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,6 +46,16 @@ class MainActivity : ComponentActivity() {
                     val factory = HiltViewModelFactory(LocalContext.current,navBackStackEntry)
                     val viewModel : LoginViewModel = viewModel(key = "LoginViewModel",factory = factory)
                     LoginScreen(viewModel = viewModel, navigatePage = navController::navigate)
+                }
+                composable(Screen.SignUpScreen.route){ navBackStackEntry ->
+                    val factory = HiltViewModelFactory(LocalContext.current,navBackStackEntry)
+                    val viewModel : SignUpViewModel = viewModel(key = "SignUpViewModel",factory = factory)
+                    SignUpScreen(viewModel = viewModel, navigatePage = navController::navigate)
+                }
+                composable(Screen.MainScreen.route){ navBackStackEntry ->
+                    val factory = HiltViewModelFactory(LocalContext.current,navBackStackEntry)
+                    val viewModel : MainViewModel = viewModel(key = "MainViewModel",factory = factory)
+                    MainScreen(viewModel = viewModel, navigatePage = navController::navigate)
                 }
             }
         }

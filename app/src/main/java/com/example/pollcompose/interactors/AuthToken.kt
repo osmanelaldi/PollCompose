@@ -1,8 +1,8 @@
 package com.example.pollcompose.interactors
 
 import com.example.pollcompose.data.network.PollService
-import com.example.pollcompose.domain.model.AccountResponse
 import com.example.pollcompose.domain.model.util.DataState
+import com.example.pollcompose.model.AccountResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

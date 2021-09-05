@@ -1,7 +1,17 @@
-package com.example.pollcompose.domain.model
+package com.example.pollcompose.model
 
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AccountResponse(
-    val id : String
-) : Serializable
+    val access_token: String,
+    val expires_in: Int,
+    val refresh_token: String,
+    val token_type: String,
+    val user: UserResponse
+)
+
+data class SignupResponse(
+    val accountResponse: AccountResponse,
+    val userName : String
+)
