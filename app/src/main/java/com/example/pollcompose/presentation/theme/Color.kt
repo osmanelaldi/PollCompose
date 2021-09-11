@@ -11,3 +11,17 @@ val Brown = Color(0XFF444941)
 val GrayLight = Color(0XFFDCDCDC)
 val ErrorRed = Color(0XFFFF3F2A)
 val Blue = Color(0XFF2084f6)
+val White = Color(0xFFFFFFFF)
+
+
+sealed class ColorScheme {
+    open val light =  White
+    open val medium =  GrayLight
+    open val dark = Brown
+
+    object BlueScheme : ColorScheme() {
+        override val light =  Color(0XFFf1f5ff)
+        override val medium = Color(0XFFa5bfff)
+        override val dark = Color(0XFF729bff)
+    }
+}

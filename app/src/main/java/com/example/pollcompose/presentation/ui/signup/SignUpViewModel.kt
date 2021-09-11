@@ -6,10 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pollcompose.data.datasource.AppDataSource
 import com.example.pollcompose.domain.model.AccountRequest
 import com.example.pollcompose.interactors.CreateUser
 import com.example.pollcompose.interactors.SignUp
 import com.example.pollcompose.model.SignupResponse
+import com.example.pollcompose.model.UserRequest
 import com.example.pollcompose.presentation.ui.components.DialogQueue
 import com.example.pollcompose.presentation.ui.components.MessageDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,10 +29,11 @@ class SignUpViewModel
 constructor(
     private val signUp : SignUp,
     private val createUser: CreateUser,
+    private val appDataSource: AppDataSource,
     private val state : SavedStateHandle
 ) : ViewModel(){
 
-    val newUser : MutableState<SignupResponse?> = mutableStateOf(null)
+    val authenticatedId : MutableState<String?> = mutableStateOf(null)
     val loading = mutableStateOf(false)
     val emailMatches = mutableStateOf(false)
     val passwordMatches = mutableStateOf(false)
@@ -38,13 +41,18 @@ constructor(
     val password = mutableStateOf("")
     val name = mutableStateOf("")
     val queue = DialogQueue()
+
     init {
+        state.get<String>(SIGNUP_NAME_KEY)?.let { name->
+            setName(name)
+        }
         state.get<String>(SIGNUP_EMAIL_KEY)?.let { email->
             setEmail(email)
         }
         state.get<String>(SIGNUP_PASSWORD_KEY)?.let { password->
             setPassword(password)
         }
+        appDataSource.bindDataSource(viewModelScope)
     }
 
     fun signUp(accountRequest: AccountRequest){
@@ -63,7 +71,8 @@ constructor(
             loading.value = dataState.isLoading
 
             dataState.data?.let { data->
-                newUser.value = data
+                appDataSource.saveToken(data.accountResponse.access_token)
+                createUser(data)
             }
             dataState.error?.let { errorMessage->
                 queue.appendDialog(MessageDialog.Error(errorMessage))
@@ -72,14 +81,39 @@ constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun createUser(signupResponse: SignupResponse){
+        val newUser = signupResponse.accountResponse.user
+        val userRequest = UserRequest(
+            id = newUser.id,
+            mail = newUser.email,
+            name = signupResponse.userName,
+            token = signupResponse.accountResponse.access_token
+        )
+
+        createUser.execute(userRequest).onEach { dataState ->
+            dataState.data?.let {
+                authenticatedId.value = userRequest.id
+            }
+            dataState.error?.let { errorMessage->
+                queue.appendDialog(MessageDialog.Error(errorMessage))
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun setName(nameEntry : String){
+        state.set(SIGNUP_NAME_KEY, name)
+        name.value = nameEntry
+        checkEmailAndPassword()
+    }
+
     fun setEmail(emailEntry : String){
-        state.set(com.example.pollcompose.presentation.ui.login.LOGIN_EMAIL_KEY, email)
+        state.set(SIGNUP_PASSWORD_KEY, email)
         email.value = emailEntry
         checkEmailAndPassword()
     }
 
     fun setPassword(passwordEntry : String){
-        state.set(com.example.pollcompose.presentation.ui.login.LOGIN_PASSWORD_KEY, password)
+        state.set(SIGNUP_PASSWORD_KEY, password)
         password.value = passwordEntry
         checkEmailAndPassword()
     }

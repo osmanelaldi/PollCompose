@@ -1,15 +1,16 @@
 package com.example.pollcompose.data.datasource
 
 import android.app.Application
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.createDataStore
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
+import com.example.pollcompose.model.User
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,31 +24,33 @@ constructor(app : Application){
 
     private val dataSource : DataStore<Preferences> = app.createDataStore("account")
 
-    private val scope = CoroutineScope(Main)
+    val token : MutableState<String?> = mutableStateOf(null)
+    val user : MutableState<User?> = mutableStateOf(null)
 
-    init {
-        observeDataStore()
-    }
-
-    val accountId = mutableStateOf("")
-
-    fun saveUserId(userId : String){
-        scope.launch {
-            dataSource.edit { preferences->
-                preferences[ACCOUNT_ID] = userId
-            }
+    suspend fun saveToken(token : String){
+        dataSource.edit { preferences->
+            preferences[TOKEN] = "Bearer $token"
         }
     }
 
-    fun observeDataStore(){
+    suspend fun saveUser(user : User){
+        dataSource.edit { preferences->
+            preferences[USER] = Gson().toJson(user)
+        }
+    }
+
+
+    fun bindDataSource(scope : CoroutineScope){
         dataSource.data.onEach { preferences->
-            preferences[ACCOUNT_ID]?.let { id->
-                accountId.value = id
+            token.value = preferences[TOKEN] ?: ""
+            user.value = preferences[USER]?.let { user->
+                Gson().fromJson(user,User::class.java)
             }
-        }
+        }.launchIn(scope)
     }
 
     companion object{
-        private val ACCOUNT_ID = stringPreferencesKey("account_id_key")
+        private val TOKEN = stringPreferencesKey("token")
+        private val USER = stringPreferencesKey("user")
     }
 }

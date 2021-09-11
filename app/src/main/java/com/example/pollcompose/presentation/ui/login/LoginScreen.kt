@@ -16,12 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pollcompose.R
 import com.example.pollcompose.domain.model.AccountRequest
 import com.example.pollcompose.presentation.Screen
 import com.example.pollcompose.presentation.theme.Brown
 import com.example.pollcompose.presentation.theme.GreenLight
-import com.example.pollcompose.presentation.ui.components.AppTheme
+import com.example.pollcompose.presentation.ui.components.common.AppTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalMaterialApi
@@ -29,7 +30,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel,
+    viewModel: LoginViewModel = hiltViewModel(),
     navigatePage : (String) -> Unit
 ){
 
@@ -45,7 +46,7 @@ fun LoginScreen(
 
     authenticatedId.value?.let { id->
         if (id.isNotEmpty()){
-            navigatePage(Screen.MainScreen.route)
+            navigatePage(Screen.MainScreen(id).route)
         }
     }
 
@@ -65,7 +66,9 @@ fun LoginScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        modifier = Modifier.padding(10.dp).size(36.dp),
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .size(36.dp),
                         painter = painterResource(id = R.drawable.ic_poll),
                         contentDescription = "Logo"
                     )

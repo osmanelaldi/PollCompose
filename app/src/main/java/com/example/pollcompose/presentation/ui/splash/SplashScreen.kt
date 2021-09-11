@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pollcompose.R
 import com.example.pollcompose.presentation.Screen
 import kotlinx.coroutines.*
@@ -25,12 +26,12 @@ import kotlin.coroutines.CoroutineContext
 @ExperimentalCoroutinesApi
 @Composable
 fun SplashScreen(
-    token : String = "",
-    viewModel: SplashViewModel,
+    viewModel: SplashViewModel = hiltViewModel(),
     navigatePage : (String) -> Unit
 ){
 
     val loading = viewModel.loading
+    val token = viewModel.token
     val authenticatedId = viewModel.authenticatedId
 
     Scaffold {
@@ -41,30 +42,44 @@ fun SplashScreen(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                modifier = Modifier.padding(10.dp).size(100.dp),
-                painter = painterResource(id = R.drawable.ic_poll),
-                contentDescription = "Logo"
-            )
-            if (loading.value)
-                CircularProgressIndicator(
-                    color = Color.Black
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(.8f),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    modifier = Modifier.size(100.dp),
+                    alignment = Alignment.Center,
+                    painter = painterResource(id = R.drawable.ic_poll),
+                    contentDescription = "Logo"
                 )
+            }
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(.2f),
+                contentAlignment = Alignment.Center
+            ) {
+                if (loading.value)
+                    CircularProgressIndicator(
+                        color = Color.Black
+                    )
+            }
+
         }
     }
 
-    if(token.isNotEmpty()){
-        viewModel.authenticateToken(token)
-    }else{
-        CoroutineScope(Dispatchers.Main).launch{
-            delay(1000)
-            navigatePage(Screen.LoginScreen.route)
+    token.value?.let{ tokenValue->
+        if(tokenValue.isNotEmpty()){
+            viewModel.authenticateToken(tokenValue)
+        }else{
+            CoroutineScope(Dispatchers.Main).launch{
+                delay(1000)
+                navigatePage(Screen.LoginScreen.route)
+            }
         }
     }
 
     authenticatedId.value?.let { id->
         if (id.isNotEmpty())
-            navigatePage(Screen.MainScreen.route)
+            navigatePage(Screen.MainScreen(id).route)
         else
             navigatePage(Screen.LoginScreen.route)
     }

@@ -4,7 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Osman/AndroidStudioProjects/PollCompose/app/src/main/res/drawable-v24/ic_poll.xml" value="0.1" />
+        <entry key="..\:/Users/Osman/AndroidStudioProjects/PollCompose/app/src/main/res/drawable/ic_account.xml" value="0.37083333333333335" />
+        <entry key="..\:/Users/Osman/AndroidStudioProjects/PollCompose/app/src/main/res/drawable/ic_error.xml" value="0.37083333333333335" />
+        <entry key="..\:/Users/Osman/AndroidStudioProjects/PollCompose/app/src/main/res/drawable/ic_launcher_background.xml" value="0.37083333333333335" />
         <entry key="..\:/Users/Osman/AndroidStudioProjects/PollCompose/app/src/main/res/drawable/ic_warning.xml" value="0.1" />
+        <entry key="..\:/Users/Osman/AndroidStudioProjects/PollCompose/app/src/main/res/font/san_francisco.xml" value="0.2490740740740741" />
       </map>
     </option>
   </component>

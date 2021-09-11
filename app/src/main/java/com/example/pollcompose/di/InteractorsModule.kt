@@ -55,4 +55,20 @@ object InteractorsModule {
     ): CreateUser{
         return CreateUser(pollService = pollService)
     }
+
+    @Singleton
+    @Provides
+    fun provideGetUser(
+        pollService: PollService
+    ): GetUser{
+        return GetUser(pollService = pollService)
+    }
+
+    @Singleton
+    @Provides
+    fun providePollVote(
+        pollService: PollService
+    ): PollVote{
+        return PollVote(pollService = pollService)
+    }
 }

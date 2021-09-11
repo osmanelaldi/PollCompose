@@ -3,8 +3,9 @@
     <string name="login">Login</string>
     <string name="signup">Sign Up</string>
     <string name="email">Email</string>
+    <string name="name">Name</string>
     <string name="dismiss">DISMISS</string>
-    <string name="error">Error Occured</string>
+    <string name="error">Error Occurred</string>
     <string name="password">Password</string>
     <string name="signup_link">Don’t have an account? Sign up</string>
     <string name="email_or_password_empty">Email and password field is required</string>

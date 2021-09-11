@@ -18,10 +18,16 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel
 @Inject constructor(
-    private val authToken: AuthToken
+    private val authToken: AuthToken,
+    private val appDataSource: AppDataSource
     ): ViewModel(){
 
+    init {
+        appDataSource.bindDataSource(viewModelScope)
+    }
+
     val authenticatedId : MutableState<String?> = mutableStateOf(null)
+    val token = appDataSource.token
     val loading = mutableStateOf(false)
 
     fun authenticateToken(token : String){
@@ -40,7 +46,7 @@ class SplashViewModel
             loading.value = dataState.isLoading
 
             dataState.data?.let { data->
-                authenticatedId.value = data.user.id
+                authenticatedId.value = data.id
             }
             dataState.error?.let {
                 authenticatedId.value = ""

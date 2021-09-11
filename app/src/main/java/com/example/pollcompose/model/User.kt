@@ -1,8 +1,10 @@
-package com.example.pollcompose.domain.model
+package com.example.pollcompose.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class User(
     val id: String,
-    val imageUrl: Any,
-    val name: String,
-    val surname: String
+    val imageUrl: String?,
+    val name: String
 )

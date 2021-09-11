@@ -11,7 +11,11 @@ data class AccountResponse(
     val user: UserResponse
 )
 
+@Serializable
 data class SignupResponse(
     val accountResponse: AccountResponse,
     val userName : String
 )
+
+@Serializable
+class EmptyResponse

@@ -1,7 +1,6 @@
 package com.example.pollcompose.presentation.ui.signup
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -11,18 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pollcompose.R
 import com.example.pollcompose.domain.model.AccountRequest
 import com.example.pollcompose.presentation.Screen
 import com.example.pollcompose.presentation.theme.Brown
 import com.example.pollcompose.presentation.theme.GreenLight
-import com.example.pollcompose.presentation.ui.components.AppTheme
-import com.example.pollcompose.presentation.ui.login.LoginViewModel
+import com.example.pollcompose.presentation.ui.components.common.AppTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalMaterialApi
@@ -30,12 +27,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @Composable
 fun SignUpScreen(
-    viewModel: SignUpViewModel,
+    viewModel: SignUpViewModel = hiltViewModel(),
     navigatePage : (String) -> Unit
 ){
 
     val loading = viewModel.loading
-    val newUser = viewModel.newUser
+    val authenticatedId = viewModel.authenticatedId
     val emailMatches = viewModel.emailMatches
     val passwordMatches = viewModel.passwordMatches
     val dialogQueue = viewModel.queue
@@ -43,11 +40,14 @@ fun SignUpScreen(
     fun signUp(){
         val email = viewModel.email.value
         val password = viewModel.password.value
-        viewModel.signUp( AccountRequest(email, password) )
+        val name = viewModel.name.value
+        viewModel.signUp( AccountRequest(email, password, name) )
     }
 
-    newUser.value?.let { id->
-
+    authenticatedId.value?.let { id->
+        if (id.isNotEmpty()){
+            navigatePage(Screen.MainScreen(id).route)
+        }
     }
 
     AppTheme(
@@ -66,7 +66,9 @@ fun SignUpScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        modifier = Modifier.padding(10.dp).size(36.dp),
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .size(36.dp),
                         painter = painterResource(id = R.drawable.ic_poll),
                         contentDescription = "Logo"
                     )
@@ -79,11 +81,11 @@ fun SignUpScreen(
                     )
                 }
                 TextField(
-                    value = viewModel.email.value,
+                    value = viewModel.name.value,
                     onValueChange = { entry->
-                        viewModel.setEmail(entry)
+                        viewModel.setName(entry)
                     },
-                    label = { Text(LocalContext.current.getString(R.string.email)) },
+                    label = { Text(LocalContext.current.getString(R.string.name)) },
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.White
                     ),
@@ -101,7 +103,7 @@ fun SignUpScreen(
                         backgroundColor = Color.White
                     ),
                     modifier = Modifier
-                        .padding(top = 20.dp, bottom = 15.dp)
+                        .padding(bottom = 15.dp)
                         .fillMaxWidth()
                 )
                 TextField(

@@ -1,7 +1,10 @@
-package com.example.pollcompose.domain.model
+package com.example.pollcompose.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Vote(
-    val description: String,
+    val optionId : String,
     val pollId: String,
     val userId: String,
     val voteId: String

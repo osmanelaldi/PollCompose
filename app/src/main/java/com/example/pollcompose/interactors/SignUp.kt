@@ -19,7 +19,7 @@ class SignUp(
             val isNotEmpty = accountRequest.email.isNotEmpty() && accountRequest.password.isNotEmpty() && accountRequest.name.isNotEmpty()
             if (isNotEmpty && isMatches){
                 emit(DataState.loading<SignupResponse>())
-                val response = pollService.signUp(accountRequest = accountRequest)
+                val response = pollService.signUp(accountRequest = accountRequest.toRequestDTO())
                 emit(DataState.data(data = SignupResponse(accountResponse = response,userName = accountRequest.name)))
             }else if(!isNotEmpty){
                 emit(DataState.error<SignupResponse>(

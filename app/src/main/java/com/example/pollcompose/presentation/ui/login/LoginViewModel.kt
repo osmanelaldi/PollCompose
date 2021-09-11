@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pollcompose.data.datasource.AppDataSource
 import com.example.pollcompose.domain.model.AccountRequest
 import com.example.pollcompose.interactors.Login
 import com.example.pollcompose.presentation.ui.components.DialogQueue
@@ -25,6 +26,7 @@ class LoginViewModel
 @Inject
 constructor(
     private val login: Login,
+    private val appDataSource: AppDataSource,
     private val state : SavedStateHandle
     ) : ViewModel(){
 
@@ -59,6 +61,7 @@ constructor(
             loading.value = dataState.isLoading
 
             dataState.data?.let { data->
+                appDataSource.saveToken(data.access_token)
                 authenticatedId.value = data.user.id
             }
             dataState.error?.let { errorMessage->

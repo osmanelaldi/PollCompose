@@ -17,7 +17,7 @@ class Login (
         try {
             if (accountRequest.email.isNotEmpty() && accountRequest.password.isNotEmpty()) {
                 emit(DataState.loading<AccountResponse>())
-                val response = pollService.login(accountRequest = accountRequest)
+                val response = pollService.login(accountRequest = accountRequest.toRequestDTO())
                 emit(DataState.data(data = response))
             }else{
                 emit(DataState.error<AccountResponse>(

@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserResponse(
     val aud: String,
-    val confirmed_at: String,
     val created_at: String,
     val email: String,
     val email_change_confirm_status: Int,
