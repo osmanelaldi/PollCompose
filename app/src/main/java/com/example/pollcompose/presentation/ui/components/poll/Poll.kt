@@ -5,9 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.example.pollcompose.R
+import com.example.pollcompose.model.CreateOption
 import com.example.pollcompose.model.Poll
 import com.example.pollcompose.model.Vote
 import com.example.pollcompose.presentation.theme.Brown
@@ -36,8 +38,10 @@ import java.util.*
 fun Poll(
     currentUser : String,
     poll : Poll,
-    onVote : (Vote) -> Unit
+    onVote : (Vote) -> Unit,
+    onDelete : (Poll) -> Unit,
 ){
+    val scheme = ColorScheme.getScheme(poll.color)
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,57 +68,77 @@ fun Poll(
                     color = Brown
                 )
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(20.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
                 ) {
                     val userVote = poll.getUserVote(currentUser)
                     poll.options.forEach { option->
                         val selectedVote = option.votes?.find { it.userId == userVote?.userId }
                         val isSelected = selectedVote != null
-                        VoteCell(
-                            percentage = (option.votecount?: 0).toFloat() / (poll.votecount ?: 0),
-                            description = option.description,
-                            amount = option.votecount ?: 0,
-                            scheme = ColorScheme.BlueScheme,
-                            isSelected = isSelected,
-                            onSelect = {
-                                val newVote = Vote(
-                                    optionId = option.optionId,
-                                    pollId = poll.pollId,
-                                    userId = currentUser,
-                                    voteId = if (isSelected) selectedVote!!.voteId else
-                                        userVote?.voteId ?: UUID.randomUUID().toString()
+                        option.votecount?.let {
+                            VoteCell(
+                                percentage = if (option.votecount == 0) option.votecount.toFloat()
+                                else (option.votecount).toFloat() / (poll.votecount),
+                                description = option.description,
+                                scheme = scheme,
+                                isSelected = isSelected,
+                                onSelect = {
+                                    val newVote = Vote(
+                                        optionId = option.optionId,
+                                        pollId = poll.pollId,
+                                        userId = currentUser,
+                                        voteId = if (isSelected) selectedVote!!.voteId else
+                                            userVote?.voteId ?: UUID.randomUUID().toString()
 
-                                )
-                                onVote(newVote)
-                            }
-                        )
+                                    )
+                                    onVote(newVote)
+                                }
+                            )
+                        }
                     }
                 }
                 Row(modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Image(
-                        modifier = Modifier.size(40.dp).padding(5.dp).clip(CircleShape),
-                        painter = if (!poll.user.imageUrl.isNullOrEmpty()) rememberImagePainter(poll.user.imageUrl)
-                        else painterResource(id = R.drawable.ic_account),
-                        contentScale = ContentScale.Crop,
-                        contentDescription = "userImage"
-                    )
-                    Text(
-                        text = poll.user.name,
-                        style = MaterialTheme.typography.body2,
-                        color = Brown
-                    )
-                    Text(
-                        modifier = Modifier.fillMaxWidth(1f).padding(5.dp),
-                        text = DateUtils.getPrettyDate(poll.createdAt),
-                        textAlign = TextAlign.End,
-                        style = MaterialTheme.typography.body2,
-                        color = Brown
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .padding(5.dp)
+                                .clip(CircleShape),
+                            painter = if (!poll.user.imageUrl.isNullOrEmpty()) rememberImagePainter(poll.user.imageUrl)
+                            else painterResource(id = R.drawable.ic_account),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "userImage"
+                        )
+                        Text(
+                            text = poll.user.name,
+                            style = MaterialTheme.typography.body2,
+                            color = Brown
+                        )
+                    }
+                    Button(
+                        modifier = Modifier.size(40.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        contentPadding = PaddingValues(0.dp),
+                        elevation = null,
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                        onClick = {
+                            onDelete(poll)
+                        }) {
+                        Icon(
+                            Icons.Filled.Delete,
+                            contentDescription = "Localized description",
+                            tint = scheme.dark
+                        )
+                    }
                 }
             }
         }

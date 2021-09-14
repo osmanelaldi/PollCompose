@@ -9,8 +9,8 @@ class PollServiceImpl(
     private val httpClient: HttpClient,
 ) : PollService {
 
-    override suspend fun getPolls(token: String): List<Poll> {
-        return httpClient.post<List<Poll>>{
+    override suspend fun getPolls(token: String): List<Poll>? {
+        return httpClient.post<List<Poll>?>{
             url("${ServiceConstants.BASE_URL}/rest/v1/rpc/getpolls")
             header(ServiceConstants.CONTENT_TYPE, ServiceConstants.CONTENT_TYPE_JSON)
             header(ServiceConstants.API_KEY, ServiceConstants.KEY)
@@ -88,4 +88,53 @@ class PollServiceImpl(
             body = vote
         }
     }
+
+    override suspend fun createPoll(pollDTO: PollDTO, token: String): Any {
+        return httpClient.post<Any>("${ServiceConstants.BASE_URL}/rest/v1/Poll"){
+            header(ServiceConstants.API_KEY,ServiceConstants.KEY)
+            header(ServiceConstants.AUTHORIZATION,token)
+            header(ServiceConstants.CONTENT_TYPE, ServiceConstants.CONTENT_TYPE_JSON)
+            header(ServiceConstants.PREFER,ServiceConstants.PREFER_MERGE_DUPLICATE)
+            body = pollDTO
+        }
+    }
+
+    override suspend fun createOptions(options: List<OptionDTO>, token: String): Any {
+        return httpClient.post<Any>("${ServiceConstants.BASE_URL}/rest/v1/Option"){
+            header(ServiceConstants.API_KEY,ServiceConstants.KEY)
+            header(ServiceConstants.AUTHORIZATION,token)
+            header(ServiceConstants.CONTENT_TYPE, ServiceConstants.CONTENT_TYPE_JSON)
+            header(ServiceConstants.PREFER,ServiceConstants.PREFER_MERGE_DUPLICATE)
+            body = options
+        }
+    }
+
+    override suspend fun deleteVotes(pollId: String, token: String): Any {
+        return httpClient.delete<Any>("${ServiceConstants.BASE_URL}/rest/v1/Vote?pollId=eq.$pollId"){
+            header(ServiceConstants.API_KEY,ServiceConstants.KEY)
+            header(ServiceConstants.AUTHORIZATION,token)
+            header(ServiceConstants.CONTENT_TYPE, ServiceConstants.CONTENT_TYPE_JSON)
+            header(ServiceConstants.PREFER,ServiceConstants.PREFER_MERGE_DUPLICATE)
+        }
+    }
+
+    override suspend fun deleteOptions(pollId: String, token: String): Any {
+        return httpClient.delete<Any>("${ServiceConstants.BASE_URL}/rest/v1/Option?pollId=eq.$pollId"){
+            header(ServiceConstants.API_KEY,ServiceConstants.KEY)
+            header(ServiceConstants.AUTHORIZATION,token)
+            header(ServiceConstants.CONTENT_TYPE, ServiceConstants.CONTENT_TYPE_JSON)
+            header(ServiceConstants.PREFER,ServiceConstants.PREFER_MERGE_DUPLICATE)
+        }
+    }
+
+    override suspend fun deletePoll(pollId: String, token: String): Any {
+        return httpClient.delete<Any>("${ServiceConstants.BASE_URL}/rest/v1/Poll?pollId=eq.$pollId"){
+            header(ServiceConstants.API_KEY,ServiceConstants.KEY)
+            header(ServiceConstants.AUTHORIZATION,token)
+            header(ServiceConstants.CONTENT_TYPE, ServiceConstants.CONTENT_TYPE_JSON)
+            header(ServiceConstants.PREFER,ServiceConstants.PREFER_MERGE_DUPLICATE)
+        }
+    }
+
+
 }

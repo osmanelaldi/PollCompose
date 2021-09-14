@@ -5,7 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,6 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.*
@@ -93,18 +100,32 @@ fun LoginScreen(
                         .padding(top = 20.dp, bottom = 15.dp)
                         .fillMaxWidth()
                 )
+                var passwordVisibility = remember { mutableStateOf(false) }
                 TextField(
                     value = viewModel.password.value,
                     onValueChange = { entry->
                         viewModel.setPassword(entry)
                     },
+                    visualTransformation = if (passwordVisibility.value) VisualTransformation.None
+                        else PasswordVisualTransformation(),
                     label = { Text(LocalContext.current.getString(R.string.password)) },
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.White
                     ),
                     modifier = Modifier
                         .padding(bottom = 40.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    trailingIcon = {
+                        val image = if (passwordVisibility.value)
+                            Icons.Filled.Visibility
+                        else Icons.Filled.VisibilityOff
+
+                        IconButton(onClick = {
+                            passwordVisibility.value = !passwordVisibility.value
+                        }) {
+                            Icon(imageVector  = image, "")
+                        }
+                    }
 
                 )
                 Button(

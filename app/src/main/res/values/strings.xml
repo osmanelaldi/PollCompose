@@ -7,6 +7,12 @@
     <string name="dismiss">DISMISS</string>
     <string name="error">Error Occurred</string>
     <string name="password">Password</string>
+    <string name="title">Title</string>
+    <string name="option">Option</string>
+    <string name="options">Options</string>
+    <string name="create_poll">Create a poll</string>
+    <string name="create">Create</string>
+    <string name="new_poll">New Poll</string>
     <string name="signup_link">Don’t have an account? Sign up</string>
     <string name="email_or_password_empty">Email and password field is required</string>
     <string name="please_fill_all_fields">All fields are required</string>

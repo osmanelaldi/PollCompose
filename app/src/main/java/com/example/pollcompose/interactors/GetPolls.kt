@@ -5,20 +5,22 @@ import com.example.pollcompose.model.Poll
 import com.example.pollcompose.domain.model.util.DataState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.lang.NullPointerException
 
 class GetPolls(
     private val pollService : PollService
 ) {
-    fun executeGetPolls(token : String) : Flow<DataState<List<Poll>>> = flow {
+    fun executeGetPolls(token : String) : Flow<DataState<List<Poll>?>> = flow {
         try {
-            emit(DataState.loading<List<Poll>>())
+            emit(DataState.loading<List<Poll>?>())
             val polls = pollService.getPolls(token)
-            emit(DataState.data(data = polls))
+            emit(DataState.data<List<Poll>?>(data = polls))
 
         }catch (e: Exception){
-            emit(DataState.error<List<Poll>>(
-                message = e.message ?: "Unknown Error"
-            ))
+            if (e !is NullPointerException)
+                emit(DataState.error<List<Poll>?>(
+                    message = e.message ?: "Unknown Error"
+                ))
         }
     }
 

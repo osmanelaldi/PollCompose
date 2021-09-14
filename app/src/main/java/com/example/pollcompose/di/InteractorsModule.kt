@@ -71,4 +71,44 @@ object InteractorsModule {
     ): PollVote{
         return PollVote(pollService = pollService)
     }
+
+    @Singleton
+    @Provides
+    fun provideCreatePoll(
+        pollService: PollService
+    ): CreatePoll{
+        return CreatePoll(pollService = pollService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideCreateOptions(
+        pollService: PollService
+    ): CreateOptions{
+        return CreateOptions(pollService = pollService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDeleteVotes(
+        pollService: PollService
+    ): DeleteVotes{
+        return DeleteVotes(pollService = pollService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDeleteOptions(
+        pollService: PollService
+    ): DeleteOptions{
+        return DeleteOptions(pollService = pollService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDeletePoll(
+        pollService: PollService
+    ): DeletePoll{
+        return DeletePoll(pollService = pollService)
+    }
 }

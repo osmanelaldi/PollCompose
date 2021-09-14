@@ -5,7 +5,6 @@ import com.example.pollcompose.model.*
 
 interface PollService {
 
-
    suspend fun signUp(accountRequest: AccountRequestDTO) : AccountResponse
 
    suspend fun login(accountRequest: AccountRequestDTO) : AccountResponse
@@ -16,9 +15,19 @@ interface PollService {
 
    suspend fun getUser(userId : String, token : String) : List<User>
 
-   suspend fun getPolls(token: String) : List<Poll>
+   suspend fun getPolls(token: String) : List<Poll>?
 
    suspend fun getPollWithId(pollId : String, token: String) : List<Poll>
 
    suspend fun vote(vote : Vote, token : String) : Any
+
+   suspend fun createPoll(pollDTO: PollDTO, token: String) : Any
+
+   suspend fun createOptions(options : List<OptionDTO>, token: String) : Any
+
+   suspend fun deleteVotes(pollId: String, token: String) : Any
+
+   suspend fun deleteOptions(pollId: String, token: String) : Any
+
+   suspend fun deletePoll(pollId: String, token: String) : Any
 }

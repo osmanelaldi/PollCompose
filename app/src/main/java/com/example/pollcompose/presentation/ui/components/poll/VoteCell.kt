@@ -32,7 +32,6 @@ fun VoteCell(
     percentage : Float,
     scheme : ColorScheme,
     isSelected : Boolean,
-    amount : Int,
     description : String,
     onSelect : () -> Unit
 ){
@@ -87,7 +86,7 @@ fun VoteCell(
                     color = Brown,
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.W500,
-                    text = "% ${String.format("%.2f",percentage * 100)}"
+                    text = "% ${String.format("%.2f",percentage * 100.toFloat())}"
                 )
             }
         }
